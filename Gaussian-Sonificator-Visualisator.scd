@@ -9,7 +9,8 @@
 //(0..1000).collect { |num| gauss(1000, num) }.plot;
 
 //Make sure it is the correct IP
-~n = NetAddr("192.168.1.7", 57120);
+~n = NetAddr("192.168.1.3", 57120);
+~nsend = NetAddr("192.168.1.3", 12345);
 //Initial values
 ~receiver = 0;
 ~stdevi = 1;
@@ -81,7 +82,7 @@ SynthDef("low", {
 	Out.ar(~vbus, out * -5.dbamp);
 	Out.ar(0, Pan2.ar(out, pan));
 }).add;
-x = Synth("low", [\amp, 0.0]);
+
 
 //Synth3
 SynthDef("noisy", {
@@ -135,7 +136,7 @@ OSCdef(\onoff, {
 		"ON".postln;
 		//Pdefstart
 		if(~s1onoff == 1, {
-		p[0].play;
+			p[0].play;
 		});
 		//Synth2
 		if(~s2onoff == 1, {
@@ -162,24 +163,28 @@ OSCdef(\onoff, {
 			z.free;
 		});
 
-	(       //f => f.stop when onoff, if not routine does not stop
+		(       //f => f.stop when onoff, if not routine does not stop
 			f = {inf.do{(
 
-/////////////////////////////////////////////////////
-	~gss = gauss(~receiver, ~stdevi).round(0.00001); //range 100////////GAUSS-Function
-if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositive
-~gss.postln;/////////////////////////////////////////
-/////////////////////////////////////////////////////
+				/////////////////////////////////////////////////////
+				~gss = gauss(~receiver, ~stdevi).round(0.00001); //range 100////////GAUSS-Function
+				if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositive
+				~gss.postln;/////////////////////////////////////////
+				/////////////////////////////////////////////////////
 
-//\freq, Prand([~scale[0], ~scale[3], ~scale[4], ~scale[7]],inf),
+				
+				//send OSC msg to Open Frameworks
+				~nsend.sendMsg('/gauss-value',  ~gss.round(1));
+				
+				//\freq, Prand([~scale[0], ~scale[3], ~scale[4], ~scale[7]],inf),
 
-	if(~gss < 10, {
-		"<10".postln;
+				if(~gss < 10, {
+					"<10".postln;
 					//noisedef
 					~freqnoisedef = ~scale[0]/8;
 					~lpfnoisedef = 666;
 					if(~s1onoff == 1, {
-					Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
+						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
 					if(~s2onoff == 1, {
@@ -194,19 +199,19 @@ if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositi
 					//clicking
 					if(~s4onoff == 1, {
 						if(1.0.rand > 0.85, {
-						Synth("clicking", [\freq, 1, \amp, 0.5]);
+							Synth("clicking", [\freq, 1, \amp, 0.5]);
 						}, {Synth("clicking", [\freq, 1, \amp, 0.0]);});
 					});
 
-	});
+				});
 
-	if((~gss >= 10) && (~gss < 30), {
-		">10 && <30".postln;
+				if((~gss >= 10) && (~gss < 30), {
+					">10 && <30".postln;
 					//noisedef
 					~freqnoisedef = ~scale[1]/8;
 					~lpfnoisedef = 1000;
 					if(~s1onoff == 1, {
-					Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
+						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
 					if(~s2onoff == 1, {
@@ -223,18 +228,18 @@ if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositi
 					//clicking
 					if(~s4onoff == 1, {
 						if(1.0.rand > 0.85, {
-						Synth("clicking", [\freq, 1, \amp, 0.5]);
+							Synth("clicking", [\freq, 1, \amp, 0.5]);
 						}, {Synth("clicking", [\freq, 1, \amp, 0.0]);});
 					});
-	});
+				});
 
-	if((~gss >= 30) && (~gss < 50), {
-		">30 && <50".postln;
+				if((~gss >= 30) && (~gss < 50), {
+					">30 && <50".postln;
 					//noisedef
 					~freqnoisedef = ~scale[2]/8;
 					~lpfnoisedef = 1300;
 					if(~s1onoff == 1, {
-					Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
+						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
 					if(~s2onoff == 1, {
@@ -251,20 +256,20 @@ if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositi
 					//clicking
 					if(~s4onoff == 1, {
 						if(1.0.rand > 0.8, {
-						Synth("clicking", [\freq, 2, \amp, 0.5]);
+							Synth("clicking", [\freq, 2, \amp, 0.5]);
 						}, {Synth("clicking", [\freq, 2, \amp, 0.0]);});
 					});
 
-	});
+				});
 
 
-	if((~gss >= 50) && (~gss < 70), {
-		">50 && <70".postln;
+				if((~gss >= 50) && (~gss < 70), {
+					">50 && <70".postln;
 					//noisedef
 					~freqnoisedef = ~scale[3]/8;
 					~lpfnoisedef = 1800;
 					if(~s1onoff == 1, {
-					Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
+						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
 					if(~s2onoff == 1, {
@@ -277,24 +282,24 @@ if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositi
 					if(~s3onoff == 1, {
 						Synth("noisy", [\freq, [
 							~scale[0]/2, ~scale[2], ~scale[3], ~scale[4]/2, ~scale[7]].choose,
-						\amp, rrand(0.8, 0.966) * [1, 0, 0], \pan, 0.5, \combdel, 0.08]);
+							\amp, rrand(0.8, 0.966) * [1, 0, 0], \pan, 0.5, \combdel, 0.08]);
 					});
 					//clicking
 					if(~s4onoff == 1, {
 						if(1.0.rand > 0.8, {
-						Synth("clicking", [\freq, 3, \amp, 0.5]);
+							Synth("clicking", [\freq, 3, \amp, 0.5]);
 						}, {Synth("clicking", [\freq, 3, \amp, 0.0]);});
 					});
 
-	});
+				});
 
-	if((~gss >= 70) && (~gss < 90), {
-		">70 && <90".postln;
+				if((~gss >= 70) && (~gss < 90), {
+					">70 && <90".postln;
 					//noisedef
 					~freqnoisedef = ~scale[4]/8;
 					~lpfnoisedef = 2000;
 					if(~s1onoff == 1, {
-					Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
+						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
 					if(~s2onoff == 1, {
@@ -320,25 +325,25 @@ if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositi
 								\freq, [~scale[0]/2, ~scale[1]/2, ~scale[2]/2, ~scale[3]/2,
 									~scale[4], ~scale[7],
 								],
-							\amp, rrand(0.8, 0.966) * [1, 0, 0], \pan, -0.4, \combdel, 0.08]);
+								\amp, rrand(0.8, 0.966) * [1, 0, 0], \pan, -0.4, \combdel, 0.08]);
 						})
 					});
 					//clicking
 					if(~s4onoff == 1, {
 						if(1.0.rand > 0.8, {
-						Synth("clicking", [\freq, 4, \amp, 0.5]);
+							Synth("clicking", [\freq, 4, \amp, 0.5]);
 						}, {Synth("clicking", [\freq, 4, \amp, 0.0]);});
 					});
 
-	});
+				});
 
-	if((~gss >= 90) && (~gss < 110), {
-		">70 && <90".postln;
+				if((~gss >= 90) && (~gss < 110), {
+					">70 && <90".postln;
 					//noisedef
 					~freqnoisedef = ~scale[5]/8;
 					~lpfnoisedef = 2200;
 					if(~s1onoff == 1, {
-					Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
+						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
 					if(~s2onoff == 1, {
@@ -368,25 +373,25 @@ if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositi
 									[~scale[2], ~scale[4]/2],
 									[~scale[3], ~scale[7]/2]
 								],
-							\amp, rrand(0.8, 0.966) * [1, 0, 0], \pan, 0.3, \combdel, 0.08]);
+								\amp, rrand(0.8, 0.966) * [1, 0, 0], \pan, 0.3, \combdel, 0.08]);
 						})
 					});
 					//clicking
 					if(~s4onoff == 1, {
 						if(1.0.rand > 0.8, {
-						Synth("clicking", [\freq, 6, \amp, 0.5]);
+							Synth("clicking", [\freq, 6, \amp, 0.5]);
 						}, {Synth("clicking", [\freq, 6, \amp, 0.0]);});
 					});
-	});
+				});
 
 
-	if((~gss >= 110) && (~gss < 130), {
-		">110 && <130".postln;
+				if((~gss >= 110) && (~gss < 130), {
+					">110 && <130".postln;
 					//noisedef
 					~freqnoisedef = ~scale[6]/8;
 					~lpfnoisedef = 2600;
 					if(~s1onoff == 1, {
-					Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
+						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
 					if(~s2onoff == 1, {
@@ -413,25 +418,25 @@ if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositi
 								\freq, [
 									[~scale, ~scale*2]
 								],
-							\amp, rrand(0.8, 0.966) * [1, 0].choose, \pan, 0.3, \combdel, 0.04]);
+								\amp, rrand(0.8, 0.966) * [1, 0].choose, \pan, 0.3, \combdel, 0.04]);
 						})
 					});
 					//clicking
 					if(~s4onoff == 1, {
 						if(1.0.rand > 0.8, {
-						Synth("clicking", [\freq, 8, \amp, 0.5]);
+							Synth("clicking", [\freq, 8, \amp, 0.5]);
 						}, {Synth("clicking", [\freq, 8, \amp, 0.0]);});
 					});
-	});
+				});
 
 
-	if((~gss >= 130) && (~gss < 160), {
-		">130 && <160".postln;
+				if((~gss >= 130) && (~gss < 160), {
+					">130 && <160".postln;
 					//noisedef
 					~freqnoisedef = ~scale[7]/8;
 					~lpfnoisedef = 3000;
 					if(~s1onoff == 1, {
-					Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
+						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
 					if(~s2onoff == 1, {
@@ -471,20 +476,20 @@ if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositi
 					//clicking
 					if(~s4onoff == 1, {
 						if(1.0.rand > 0.8, {
-						Synth("clicking", [\freq, 16, \amp, 0.5]);
+							Synth("clicking", [\freq, 16, \amp, 0.5]);
 						}, {Synth("clicking", [\freq, 16, \amp, 0.0]);});
 					});
 
-	});
+				});
 
 
-	if(~gss > 160, {
-		">160".postln;
+				if(~gss > 160, {
+					">160".postln;
 					//noisedef
 					~freqnoisedef = ~scale[1]/4;
 					~lpfnoisedef = 3200;
 					if(~s1onoff == 1, {
-					Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
+						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
 					if(~s2onoff == 1, {
@@ -524,17 +529,17 @@ if (~gss.isNegative, {~gss = ~gss * (-1)});//////////Negative values => asPositi
 					//clicking
 					if(~s4onoff == 1, {
 						if(1.0.rand > 0.8, {
-						Synth("clicking", [\freq, 32, \amp, 0.5]);
+							Synth("clicking", [\freq, 32, \amp, 0.5]);
 						}, {Synth("clicking", [\freq, 32, \amp, 0.0]);});
 					});
 
 
 
-	});
-	~genspeed.wait;
-)}
-}.fork
-)
+				});
+				~genspeed.wait;
+			)}
+			}.fork
+		)
 
 	});
 
@@ -623,7 +628,7 @@ OSCdef(\receiver, {
 OSCdef(\stdevi, {
     |msg, time, addr, port|
 	if(~onoff == 1, {
-	~stdevi = msg[1].round(0.00001).linlin(0.0, 1.0, 1, 100);
+		~stdevi = msg[1].round(0.00001).linlin(0.0, 1.0, 1, 100);
 		["Standard Deviation:", ~stdevi].postln;
 	});
 },'/gauss/stdeviation');
@@ -640,17 +645,23 @@ OSCdef(\genspeed, {
 );
 
 p = [
-//Pdefs - register-----------------------
-//NoiseDef-Initial
-Pdef(\noisedeff,
-	Pbind(
-		\instrument,
-		\noisedef,
-		\dur, Pwhite(6, 12),
-		\amp, Pwhite(0.33, 0.66),
-	)
-),
+	//Pdefs - register-----------------------
+	//NoiseDef-Initial
+	Pdef(\noisedeff,
+		Pbind(
+			\instrument,
+			\noisedef,
+			\dur, Pwhite(6, 12),
+			\amp, Pwhite(0.33, 0.66),
+		)
+	),
 
 ];
+
+//if right after SynthDef "synth not found" error
+x = Synth("low", [\amp, 0.0]);
 //:
+
+
+
 
