@@ -10,6 +10,7 @@
 
 //Make sure it is the correct IP
 ~n = NetAddr("192.168.1.3", 57120);
+//192.168.43.220
 ~nsend = NetAddr("192.168.1.3", 12345);
 //Initial values
 ~receiver = 0;
@@ -183,7 +184,7 @@ OSCdef(\onoff, {
 					//noisedef
 					~freqnoisedef = ~scale[0]/8;
 					~lpfnoisedef = 666;
-					if(~s1onoff == 1, {
+					if(~s1onoff == 1, {~/
 						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
