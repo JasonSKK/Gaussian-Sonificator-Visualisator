@@ -184,7 +184,7 @@ OSCdef(\onoff, {
 					//noisedef
 					~freqnoisedef = ~scale[0]/8;
 					~lpfnoisedef = 666;
-					if(~s1onoff == 1, {~/
+					if(~s1onoff == 1, {
 						Synth("noisedef", [\freq, ~freqnoisedef, \lpf, ~lpfnoisedef]).set;
 					});
 					//low
