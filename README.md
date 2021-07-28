@@ -7,8 +7,8 @@ Based on the gauss method (SuperCollder).
   
 [![Demo](https://img.youtube.com/vi/p81o0zBdKIQ/0.jpg)](https://www.youtube.com/watch?v=p81o0zBdKIQ)  
 Demo Video  
-  
-
+\  
+\  
 1) Load .touchosc layout on TouchOSC
 2) Make sure the connection is ok (IP - port) via ON/OFF button (it will start to generate values)
 3) Enjoy  
