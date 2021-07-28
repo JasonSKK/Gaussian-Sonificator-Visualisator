@@ -9,9 +9,9 @@
 //(0..1000).collect { |num| gauss(1000, num) }.plot;
 
 //Make sure it is the correct IP
-~n = NetAddr("192.168.1.3", 57120);
+~n = NetAddr("192.168.1.8", 57120);
 //192.168.43.220
-~nsend = NetAddr("192.168.1.3", 12345);
+~nsend = NetAddr("192.168.1.8", 12345);
 //Initial values
 ~receiver = 0;
 ~stdevi = 1;
